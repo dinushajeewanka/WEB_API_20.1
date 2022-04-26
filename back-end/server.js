@@ -4,7 +4,8 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const app = express();
-const catRoutes = require('./routes/cats.js')
+const catRoutes = require('./routes/cats.js');
+const userRoutes = require('./routes/users');
 require("dotenv").config();
 
 const PORT = process.env.PORT || 3000;
@@ -27,6 +28,7 @@ connection.on("open", () => {
 })
 
 app.use("/cats", catRoutes)
+app.use("/users", userRoutes)
 
 app.listen(PORT, () => {
     console.log(`Server is up and running on port number: ${PORT}`);
