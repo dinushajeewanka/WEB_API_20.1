@@ -4,7 +4,7 @@ const dotenv = require("dotenv");
 require("dotenv").config();
 
 const userControllter = {
-    createUser : (req,res)=>{
+    createUser :  async (req,res)=>{
 
         const email = req.body.email;
         const password = req.body.password;
@@ -12,6 +12,11 @@ const userControllter = {
         const last_name= req.body.last_name;
         const gender = req.body.gender;
         const age = req.body.age;
+
+        const users = await findUser(email);
+
+        if(users) return res.json("User Already exist! Please login !")
+
     
         const newUser = new user({
             email,
@@ -50,7 +55,8 @@ const findUser = (email) =>{
 
     console.log("email====>>>",email)
    const usr = user.findOne({ email })
-   return usr
+   if(usr) return usr
+   else return null;
 
 }
 
