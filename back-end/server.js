@@ -8,7 +8,7 @@ const catRoutes = require('./routes/cats.js');
 const userRoutes = require('./routes/users');
 require("dotenv").config();
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 
 app.use(cors());
 app.use(bodyParser.json());
