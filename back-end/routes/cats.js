@@ -3,14 +3,14 @@ const res = require("express/lib/response");
 const catControllter = require("../controller/cat.js")
 const verifyUser = require("../middlewares/userAthenticator")
 
-router.post("/createcat",catControllter.createCat)
+router.post("/createcat",verifyUser,catControllter.createCat)
 
-router.delete("/deletecat",catControllter.deleteCat)
+router.delete("/deletecat",verifyUser,catControllter.deleteCat)
 
-router.put("/updatecat", catControllter.updateCat)
+router.put("/updatecat",verifyUser, catControllter.updateCat)
 
-router.get("/getcat", catControllter.getAllCats)
+router.get("/getcat",verifyUser, catControllter.getAllCats)
 
-router.get("/getcatByAdminId", catControllter.getcatByAdminId)
+router.get("/getcatByAdminId", verifyUser,catControllter.getcatByAdminId)
 
 module.exports = router

@@ -4,6 +4,7 @@ import {Container ,Card, Col, Button,Row, Form, Modal,ToggleButton,ButtonGroup} 
 import img1 from '../img/img.webp';  
 import axios from 'axios'
 import NavBar from './nav';
+import Swal from 'sweetalert2'
 const MyPosts =(props) => { 
     const user = localStorage.getItem('user')
     const handleClose = () => setValue({...value,show:false});
@@ -31,12 +32,19 @@ const MyPosts =(props) => {
       });
 
     useEffect(()=>{
-        getcatbyAdmin();
-
+        async function func(){
+          await  getcatbyAdmin();
+        }
+        func()
+        console.log("cat.photo",value.cats)
         
     },[])
      const getcatbyAdmin=()=>{
-        axios.get(`http://localhost:8000/cats/getcatByAdminId?adminId=${JSON.parse(user).user._id}`)
+        axios.get(`http://localhost:8000/cats/getcatByAdminId?adminId=${JSON.parse(user).user._id}`,{
+            headers: {
+              'authorization': `Bearer ${JSON.parse(user).accessToken}`
+            }
+          })
           .then(function (response) {
             console.log("response",response.data);
             setValue({cats:response.data})
@@ -51,14 +59,33 @@ const MyPosts =(props) => {
     const deletePost =()=>{
         // const deleteId = localStorage.getItem('deleteItemId')
         // e.preventDefault();
-        axios.delete(`http://localhost:8000/cats/deletecat?catId=${value.postId}`)
+        axios.delete(`http://localhost:8000/cats/deletecat?catId=${value.postId}`,{
+            headers: {
+              'authorization': `Bearer ${JSON.parse(user).accessToken}`
+            }
+          }
+        )
         .then(function (response) {
         console.log("response.data",response.data);
         setValue({...value,show:false})
                 getcatbyAdmin();
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Post Delete Successfull !',
+                    showConfirmButton: false,
+                    timer: 1500
+                  })
         })
         .catch(function (error) {
-        alert(error.data);
+        
+      Swal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: 'Cannot Delete Post!',
+        showConfirmButton: false,
+        timer: 1500
+      })
         console.log(error.data);
         })
     }
@@ -76,17 +103,55 @@ const MyPosts =(props) => {
             owner_name:value.cat.owner_name,
             owner_mobile:value.cat.owner_mobile,
             photo:value.cat.photo
-        })
+        },{
+            headers: {
+              'authorization': `Bearer ${JSON.parse(user).accessToken}`
+            }
+          })
         .then(function (response) {
         console.log("response.data",response.data);
         setValue({...value,showEditModal:false})
                 getcatbyAdmin();
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Post Updated !',
+                    showConfirmButton: false,
+                    timer: 1500
+                  })
         })
         .catch(function (error) {
-        alert(error.data);
+        
+      Swal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: 'Post Updated Faild !',
+        showConfirmButton: false,
+        timer: 1500
+      })
         console.log(error.data);
         })
     }
+    const convertToBase64 = (file) => {
+      return new Promise((resolve, reject) => {
+        const fileReader = new FileReader();
+        fileReader.readAsDataURL(file);
+        fileReader.onload = () => {
+          resolve(fileReader.result);
+        };
+        fileReader.onerror = (error) => {
+          reject(error);
+        };
+      });
+    };
+  
+    const handleFileUpload = async (e) => {
+      const file = e.target.files[0];
+      const base64 = await convertToBase64(file);
+      console.log(base64)
+      setValue({...value,cat:{...value.cat,photo:base64}})
+      // setPostImage({ ...postImage, myFile: base64 });
+    };
 
   return (  
     <div className="App">  
@@ -221,11 +286,11 @@ const MyPosts =(props) => {
         </Col>
       
       <Col sm={9}>
-      <Form.Control type="file" accept="image/*" onChange={(e) => setValue({...value,cat:{...value.cat,photo:URL.createObjectURL(e.target.files[0])}})}/>
+      <Form.Control type="file" accept="image/*" onChange={(e) => handleFileUpload(e)}/>
       </Col>
       </Row>
     </Form.Group>
-    <Card md={3} style={{ width: '18rem' }}>
+    <Card md={3} style={{ width: '18rem' ,height:'18rem'}}>
     <Card.Img variant="bottom"  src={value.cat?value.cat.photo:''} />
   </Card>
     
@@ -255,7 +320,7 @@ const MyPosts =(props) => {
   {(value.cats || []).map((cat) => (
       <Col md="3"> 
         <Card sm={2}>  
-            <Card.Img variant="top" src={cat.photo} style={{ width: '18.5rem' }} />  
+            <Card.Img variant="top" src={cat?cat.photo:"" } style={{ width: '18.5rem',height:'18.5rem' }} />  
 
         <Card.Body>   
             <Card.Title>{cat.name}</Card.Title>

@@ -2,6 +2,7 @@ import React ,{ useState } from 'react';
 import { Button, Form,Container,Row,Col,ToggleButton,ButtonGroup } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios'
+import Swal from 'sweetalert2'
 
 
 const Login = ()=> {
@@ -30,11 +31,24 @@ const Login = ()=> {
       console.log(response.data);
       localStorage.getItem('user')
       console.log("localStorage.getItem('user')===>>",localStorage.getItem('user'))
+      Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'Login Successfull !',
+        showConfirmButton: false,
+        timer: 1500
+      })
       window.location.replace("/home");
      
     })
     .catch(function (error) {
-      alert(error.data);
+      Swal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: 'Login Successfull !',
+        showConfirmButton: false,
+        timer: 1500
+      })
       console.log(error.data);
     });
   }else{

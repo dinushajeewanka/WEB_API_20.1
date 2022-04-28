@@ -8,7 +8,7 @@ const verifyUser = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
-    console.log("authHeader", authHeader)
+    console.log("authHeader", req.headers)
 
     if(!token) return res.json("cannot find token");
 

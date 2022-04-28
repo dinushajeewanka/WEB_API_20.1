@@ -3,6 +3,7 @@ import { Button, Form,Container,Row,Col,ToggleButton,ButtonGroup,Card } from 're
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios'
 import NavBar from './nav';
+import Swal from 'sweetalert2'
 
 
 const CreatePost = ()=> {
@@ -23,9 +24,31 @@ const CreatePost = ()=> {
     });
 
   const radios = [
-    { name: 'Male', value: 'male' },
-    { name: 'Female', value: 'male' }
+    { name: 'Male', value: 'Male' },
+    { name: 'Female', value: 'Female' }
   ];
+
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
+  };
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    const base64 = await convertToBase64(file);
+    console.log(base64)
+    setValue({...value,photo:base64})
+    // setPostImage({ ...postImage, myFile: base64 });
+  };
+
 
   const register = (e) =>{
     e.preventDefault();
@@ -50,16 +73,44 @@ const CreatePost = ()=> {
         owner_mobile:value.ownerMoble,
         photo:value.photo,
         adminId:value.adminId
+  },{
+    
+        headers: {
+          'authorization': `Bearer ${JSON.parse(user).accessToken}`
+        }
+      
   })
     .then(function (response) {
       console.log(response.data);
+      Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'Post Creation Successfull !',
+        showConfirmButton: false,
+        timer: 1500
+      })
+      window.location.replace("/myposts");
     })
     .catch(function (error) {
-        console.log(error.data);
+        
+      Swal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: 'Post Creation Faild !',
+        showConfirmButton: false,
+        timer: 1500
+      })
     });
   }else{
     
-    alert("Please Fill All requred fields")
+        
+    Swal.fire({
+        position: 'top-end',
+        icon: 'warning',
+        title: 'Please Fill All Required fields',
+        showConfirmButton: false,
+        timer: 1500
+      })
 
   }
   
@@ -201,7 +252,7 @@ const CreatePost = ()=> {
         </Col>
       
       <Col sm={9}>
-      <Form.Control type="file" accept="image/*" onChange={(e) => setValue({...value,photo:URL.createObjectURL(e.target.files[0])})}/>
+      <Form.Control type="file" accept="image/*" onChange={(e) => handleFileUpload(e)}/>
       </Col>
       </Row>
     </Form.Group>

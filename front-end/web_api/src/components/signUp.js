@@ -24,6 +24,7 @@ const SignUp = ()=> {
     { name: 'Female', value: 'male' }
   ];
 
+
   const register = (e) =>{
     e.preventDefault();
 

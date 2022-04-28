@@ -31,17 +31,22 @@ const Home =(props) => {
         !searchItem ? setValue({...value,cats:allcats}) : setValue({...value,cats:filteredUsers})
 
     }
-    const handleSearch = (e) =>{
+    // const handleSearch = (e) =>{
         
-        e.preventDefault();
-        // setValue({...value,searchableCatName:e.target.value})
-        // console.log("e.target.value",value.searchableCatName)
-        searchCat(e.target.value);
-    }
+    //     e.preventDefault();
+    //     // setValue({...value,searchableCatName:e.target.value})
+    //     // console.log("e.target.value",value.searchableCatName)
+    //     searchCat(e.target.value);
+    // }
 
     useEffect(()=>{
-        
-        axios.get('http://localhost:8000/cats/getcat')
+        const userDetails = localStorage.getItem('user')
+        console.log("doce>>>",userDetails)
+        axios.get('http://localhost:8000/cats/getcat',{
+            headers: {
+              'authorization': `Bearer ${JSON.parse(userDetails).accessToken}`
+            }
+          })
           .then(function (response) {
             console.log(response.data);
             setValue({cats:response})
@@ -67,7 +72,7 @@ const Home =(props) => {
            <Col >
            <Form>
            <Row>
-    <Form.Control type="input" placeholder="Enter cat Name" onChange={handleSearch} />
+    {/* <Form.Control type="input" placeholder="Enter cat Name" onChange={handleSearch} /> */}
     </Row>
   </Form>
            </Col>
@@ -80,7 +85,7 @@ const Home =(props) => {
   {(value.cats.data || []).map((cat) => (
       <Col md="3"> 
         <Card sm={2}>  
-            <Card.Img variant="top" src={cat.photo} style={{ width: '18.5rem' }} />  
+            <Card.Img variant="top" src={cat.photo} style={{ width: '18.5rem',height:'18.5rem' }} />  
 
         <Card.Body>   
             <Card.Title>{cat.name}</Card.Title>
