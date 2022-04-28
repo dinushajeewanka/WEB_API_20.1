@@ -57,6 +57,8 @@ const catControllter = {
         const owner_name = req.body.owner_name;
         const owner_mobile = req.body.owner_mobile;
         const photo = req.body.photo;
+
+        console.log("req.body====>>>",JSON.stringify(req.body))
     
         cat.updateOne({_id:catId}, {
             name,

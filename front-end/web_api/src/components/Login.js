@@ -3,6 +3,7 @@ import { Button, Form,Container,Row,Col,ToggleButton,ButtonGroup } from 'react-b
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios'
 
+
 const Login = ()=> {
     const [value, setValue] = useState({
       email:'',
@@ -14,7 +15,7 @@ const Login = ()=> {
   const login = (e) =>{
     e.preventDefault();
 
-    console.log("value===>>",JSON.stringify(value))
+  
 
     if(value.email && 
       value.password ){
@@ -24,8 +25,13 @@ const Login = ()=> {
       password: value.password
   })
     .then(function (response) {
-      alert(response.data);
+      // alert(response.data);
+      localStorage.setItem('user',JSON.stringify(response.data))
       console.log(response.data);
+      localStorage.getItem('user')
+      console.log("localStorage.getItem('user')===>>",localStorage.getItem('user'))
+      window.location.replace("/home");
+     
     })
     .catch(function (error) {
       alert(error.data);
@@ -94,7 +100,9 @@ const Login = ()=> {
     <Col sm={3}></Col>
     </Row>
 
-  </Form></Col>
+  </Form>
+  Need an Account ? <a href='/register'> Sign Up</a>
+  </Col>
 
     <Col sm={3}></Col>
   </Row>

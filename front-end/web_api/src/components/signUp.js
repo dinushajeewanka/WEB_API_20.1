@@ -2,6 +2,9 @@ import React ,{ useState } from 'react';
 import { Button, Form,Container,Row,Col,ToggleButton,ButtonGroup } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios'
+// import {Swal} from 'sweetalert2-react';
+import Swal from 'sweetalert2'
+
 
 const SignUp = ()=> {
     const [value, setValue] = useState({
@@ -43,14 +46,33 @@ const SignUp = ()=> {
       age: value.age
   })
     .then(function (response) {
-      alert(response.data);
+      Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'Registration Successfull !',
+        showConfirmButton: false,
+        timer: 1500
+      })
     })
     .catch(function (error) {
-      alert(error.data);
+
+      Swal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: 'Registration Faild !',
+        showConfirmButton: false,
+        timer: 1500
+      })
     });
   }else{
     
-    alert("Please Fill All requred fields")
+    Swal.fire({
+      position: 'top-end',
+      icon: 'warning',
+      title: 'Please Fill All Required fields',
+      showConfirmButton: false,
+      timer: 1500
+    })
 
   }
   
@@ -184,7 +206,9 @@ const SignUp = ()=> {
     <Col sm={3}></Col>
     </Row>
 
-  </Form></Col>
+  </Form>
+  Alredy have an account? <a href='/login'>Log In</a>
+  </Col>
 
     <Col sm={3}></Col>
   </Row>

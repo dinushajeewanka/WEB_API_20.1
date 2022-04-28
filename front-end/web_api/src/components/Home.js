@@ -3,48 +3,44 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {Container ,Card, Col, Button,Row, Form} from 'react-bootstrap';  
 import img1 from '../img/img.webp';  
 import axios from 'axios'
-const  posts ={
-    "success": true,
-    "existingcrews": [
-        {
-            "_id": "626888ba8dfed54050dd8705",
-            "contractID": "con01",
-            "position": "Mechanic",
-            "employeeID": "em00001",
-            "employeeName": "Perera wijerathna",
-            "contactNo": "0726785437",
-            "__v": 0
-        },
-        {
-            "_id": "626889b48dfed54050dd8726",
-            "contractID": "con00003",
-            "position": "Superviser",
-            "employeeID": "emp003",
-            "employeeName": "Jagath Silva",
-            "contactNo": "0712345678",
-            "__v": 0
-        },
-        {
-            "_id": "62688a1d8dfed54050dd8750",
-            "contractID": "con002",
-            "position": "Mechanic",
-            "employeeID": "emp002",
-            "employeeName": "Saman dias",
-            "contactNo": "0726785437",
-            "__v": 0
-        }
-    ]
-}
-const Home =() => { 
+import NavBar from './nav';
+const Home =(props) => { 
     
     const [value, setValue] = useState({
-        cats:[]
+        cats:[],
+        searchableCatName:''
   
   
       });
 
+    const searchCat = (searchItem) =>{
+
+        const allcats = {...value.cats}
+
+        
+
+        const filteredUsers = (value.cats.data || []).filter(item=>{
+            console.log("item.name==>>",item.name)
+            console.log("value.cats==>>",searchItem)
+            if(item.name.toLowerCase() === searchItem.toLowerCase()){
+                return item;
+            }
+        
+            
+        })
+        !searchItem ? setValue({...value,cats:allcats}) : setValue({...value,cats:filteredUsers})
+
+    }
+    const handleSearch = (e) =>{
+        
+        e.preventDefault();
+        // setValue({...value,searchableCatName:e.target.value})
+        // console.log("e.target.value",value.searchableCatName)
+        searchCat(e.target.value);
+    }
+
     useEffect(()=>{
-        console.log("Called")
+        
         axios.get('http://localhost:8000/cats/getcat')
           .then(function (response) {
             console.log(response.data);
@@ -61,15 +57,30 @@ const Home =() => {
 
   return (  
     <div className="App">  
+    <NavBar />
+
    <Container className='p-4'> 
    <div className='row'>
+
+       <Row>
+           <Col></Col>
+           <Col >
+           <Form>
+           <Row>
+    <Form.Control type="input" placeholder="Enter cat Name" onChange={handleSearch} />
+    </Row>
+  </Form>
+           </Col>
+           <Col></Col>
+       </Row>
    
-  
+
+
   
   {(value.cats.data || []).map((cat) => (
-      <Col md="4"> 
+      <Col md="3"> 
         <Card sm={2}>  
-            <Card.Img variant="top" src={img1} height={200} width={100} />  
+            <Card.Img variant="top" src={cat.photo} style={{ width: '18.5rem' }} />  
 
         <Card.Body>   
             <Card.Title>{cat.name}</Card.Title>
